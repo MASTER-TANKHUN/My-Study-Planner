@@ -8,7 +8,7 @@ const MODEL = 'qwen3:8b';
 
 // Middleware
 app.use(cors({
-    origin: '*', // อนุญาตทุกโดเมน (เพื่อให้ Vercel เข้าถึงได้)
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning']
 }));
@@ -17,7 +17,7 @@ app.use(express.json({ limit: '1mb' }));
 // ========== Queue System (Max 1 concurrent) ==========
 let isProcessing = false;
 
-// ========== Chat Endpoint ==========
+// ========== Streaming Chat Endpoint ==========
 app.post('/api/chat', async (req, res) => {
     // Check if busy
     if (isProcessing) {
@@ -35,7 +35,14 @@ app.post('/api/chat', async (req, res) => {
 
     // Lock the queue
     isProcessing = true;
-    console.log(`[${new Date().toLocaleTimeString()}] Processing request...`);
+    const startTime = Date.now();
+    console.log(`[${new Date().toLocaleTimeString()}] ⚡ Processing request (streaming)...`);
+
+    // Set headers for streaming (SSE-like plain text stream)
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no'); // Disable nginx/ngrok buffering
 
     try {
         const ollamaResponse = await fetch(`${OLLAMA_URL}/api/chat`, {
@@ -44,10 +51,10 @@ app.post('/api/chat', async (req, res) => {
             body: JSON.stringify({
                 model: MODEL,
                 messages: messages,
-                stream: false,
+                stream: true,
                 options: {
                     temperature: 0.7,
-                    num_predict: 16384,
+                    num_predict: 8642,
                     num_ctx: 16384
                 }
             })
@@ -55,29 +62,66 @@ app.post('/api/chat', async (req, res) => {
 
         if (!ollamaResponse.ok) {
             const errText = await ollamaResponse.text();
-            throw new Error(`Ollama error ${ollamaResponse.status}: ${errText}`);
+            res.status(500).end(`[ERROR] Ollama error ${ollamaResponse.status}: ${errText}`);
+            return;
         }
 
-        const data = await ollamaResponse.json();
+        // Pipe Ollama's stream → extract content → send to client
+        const reader = ollamaResponse.body.getReader();
+        const decoder = new TextDecoder();
+        let totalChars = 0;
+        let buffer = '';
 
-        console.log(`[${new Date().toLocaleTimeString()}] Done. Response length: ${data.message?.content?.length || 0} chars`);
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        res.json({
-            content: data.message?.content || '',
-            model: data.model,
-            total_duration: data.total_duration
-        });
+            buffer += decoder.decode(value, { stream: true });
+
+            // Ollama sends one JSON object per line
+            const lines = buffer.split('\n');
+            buffer = lines.pop(); // Keep incomplete line in buffer
+
+            for (const line of lines) {
+                if (!line.trim()) continue;
+                try {
+                    const chunk = JSON.parse(line);
+                    const content = chunk.message?.content || '';
+                    if (content) {
+                        res.write(content);
+                        totalChars += content.length;
+                    }
+                    // If Ollama says done, end the stream
+                    if (chunk.done) {
+                        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                        console.log(`[${new Date().toLocaleTimeString()}] ✅ Done. ${totalChars} chars in ${elapsed}s`);
+                    }
+                } catch (e) {
+                    // Skip malformed JSON lines
+                }
+            }
+        }
+
+        res.end();
 
     } catch (error) {
-        console.error('Ollama error:', error.message);
+        console.error('❌ Ollama error:', error.message);
 
         // Check if Ollama is not running
         if (error.cause?.code === 'ECONNREFUSED') {
-            res.status(503).json({
-                error: 'Ollama is not running. Please start it with: ollama serve'
-            });
+            if (!res.headersSent) {
+                res.status(503).json({
+                    error: 'Ollama is not running. Please start it with: ollama serve'
+                });
+            } else {
+                res.end('\n[ERROR] Ollama disconnected.');
+            }
         } else {
-            res.status(500).json({ error: error.message });
+            if (!res.headersSent) {
+                res.status(500).json({ error: error.message });
+            } else {
+                res.end(`\n[ERROR] ${error.message}`);
+            }
         }
     } finally {
         // Unlock the queue
@@ -111,11 +155,13 @@ app.get('/api/health', async (req, res) => {
 const server = app.listen(PORT, () => {
     console.log('');
     console.log('========================================');
-    console.log('  StudyPlanner AI Server');
+    console.log('  🚀 StudyPlanner AI Server (Streaming)');
     console.log(`  http://localhost:${PORT}`);
     console.log(`  Model: ${MODEL}`);
     console.log(`  Ollama: ${OLLAMA_URL}`);
-    console.log('  Max concurrent: 1');
+    console.log('  Mode: Streaming (real-time)');
+    console.log('  Context: 16K tokens');
+    console.log('  Max predict: 8642 tokens');
     console.log('  Timeout: 10 minutes');
     console.log('========================================');
     console.log('');

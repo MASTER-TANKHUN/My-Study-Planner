@@ -1,5 +1,6 @@
 // ========== AI Study Assistant - ai.js ==========
-// Uses local Ollama server via backend proxy at localhost:3000
+// Uses local Ollama server via backend proxy
+// Features: Streaming responses, Anti-spam, Smart UI
 
 // const AI_SERVER_URL = "http://localhost:3000"; // ใช้เมื่อรันบนเครื่องตัวเอง
 const AI_SERVER_URL = "https://enjoyable-hortatively-skylar.ngrok-free.dev"; // ใช้เมื่อขึ้น Vercel (ต้องรัน ngrok http 3000 ทุกครั้งและนำ URL มาใส่)
@@ -19,6 +20,7 @@ if (nightModeStorage === 'true' || (!nightModeStorage && prefersDark)) {
 let currentUser = null;
 let tasks = [];
 let conversationHistory = [];
+let isGenerating = false; // 🔒 Anti-spam lock
 
 // ---------- DOM ----------
 const chatMessages = document.getElementById('chatMessages');
@@ -112,6 +114,14 @@ async function loadUserData(uid) {
         // Initialize system prompt with task context
         initConversation();
     }
+}
+
+// ---------- Marked Configuration (World-class Markdown) ----------
+if (typeof marked !== 'undefined') {
+    marked.use({
+        breaks: true, // Auto-convert line breaks to <br>
+        gfm: true,    // GitHub Flavored Markdown (Tables, etc.)
+    });
 }
 
 // ---------- Build System Prompt ----------
@@ -248,25 +258,72 @@ function appendMessage(role, text) {
 
     chatMessages.appendChild(msgDiv);
     scrollToBottom();
+    return msgDiv;
+}
+
+// Create an empty AI message bubble for streaming
+function createStreamingBubble() {
+    const welcome = chatMessages.querySelector('.welcome-container');
+    if (welcome) welcome.remove();
+
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'message ai';
+    msgDiv.id = 'streamingMessage';
+
+    msgDiv.innerHTML = `
+        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+        <div>
+            <div class="message-bubble streaming-bubble">
+                <span class="streaming-text"></span><span class="streaming-cursor">▌</span>
+            </div>
+            <div class="message-time">${timeStr}</div>
+        </div>
+    `;
+
+    chatMessages.appendChild(msgDiv);
+    scrollToBottom();
+    return msgDiv;
+}
+
+// Append text to the streaming bubble in real-time
+function appendToStreamingBubble(text) {
+    const streamingText = document.querySelector('#streamingMessage .streaming-text');
+    if (!streamingText) return;
+
+    // Accumulate raw text, then format
+    const currentRaw = streamingText.dataset.raw || '';
+    const newRaw = currentRaw + text;
+    streamingText.dataset.raw = newRaw;
+
+    // Format and display (marked handles HTML escaping internally)
+    streamingText.innerHTML = formatAIResponse(newRaw);
+    scrollToBottom();
+}
+
+// Finalize the streaming bubble (remove cursor, clean up)
+function finalizeStreamingBubble() {
+    const cursor = document.querySelector('#streamingMessage .streaming-cursor');
+    if (cursor) cursor.remove();
+
+    const streamingMsg = document.getElementById('streamingMessage');
+    if (streamingMsg) streamingMsg.removeAttribute('id');
 }
 
 function formatAIResponse(text) {
-    // Escape HTML first
-    let formatted = escapeHtml(text);
+    // 1. Strip <think>...</think> blocks first (raw text manipulation)
+    let cleanText = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 
-    // Bold: **text**
-    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // 2. Use 'marked' library to parse Markdown -> HTML
+    // (Ensure marked is loaded in ai.html)
+    if (typeof marked !== 'undefined') {
+        return marked.parse(cleanText);
+    }
 
-    // Inline code: `code`
-    formatted = formatted.replace(/`(.+?)`/g, '<code>$1</code>');
-
-    // Line breaks
-    formatted = formatted.replace(/\n/g, '<br>');
-
-    // Bullet points
-    formatted = formatted.replace(/^- (.+)/gm, '• $1');
-
-    return formatted;
+    // Fallback if marked failed to load
+    return escapeHtml(cleanText).replace(/\n/g, '<br>');
 }
 
 function escapeHtml(text) {
@@ -340,7 +397,41 @@ function showError(message) {
     scrollToBottom();
 }
 
-// ---------- Ollama API via Backend ----------
+// ========== UI Lock/Unlock (Anti-Spam) ==========
+function lockUI() {
+    isGenerating = true;
+    if (sendBtn) sendBtn.disabled = true;
+    if (chatInput) {
+        chatInput.disabled = true;
+        chatInput.placeholder = '⏳ StudyBot กำลังคิด...';
+    }
+    if (quickActions) {
+        quickActions.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+        });
+    }
+}
+
+function unlockUI() {
+    isGenerating = false;
+    if (sendBtn) sendBtn.disabled = false;
+    if (chatInput) {
+        chatInput.disabled = false;
+        chatInput.placeholder = 'พิมพ์ข้อความ...';
+        chatInput.focus();
+    }
+    if (quickActions) {
+        quickActions.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        });
+    }
+}
+
+// ========== Streaming AI API ==========
 async function sendToAI(userMessage) {
     // Add user message to history
     conversationHistory.push({ role: "user", content: userMessage });
@@ -384,21 +475,40 @@ async function sendToAI(userMessage) {
             // Remove queue message if it was shown
             if (queueShown) {
                 removeQueueMessage();
-                showTypingIndicator();
             }
 
             if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.error || `Server Error: ${response.status}`);
+                const errText = await response.text();
+                throw new Error(errText || `Server Error: ${response.status}`);
             }
 
-            const data = await response.json();
-            const aiMessage = data.content;
+            // 🔥 STREAMING: Read text chunks as they arrive
+            removeTypingIndicator();
+            createStreamingBubble();
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullResponse = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                fullResponse += chunk;
+                appendToStreamingBubble(chunk);
+            }
+
+            // Finalize
+            finalizeStreamingBubble();
+
+            // Strip <think>...</think> from the stored response
+            const cleanResponse = fullResponse.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
 
             // Add AI response to history
-            conversationHistory.push({ role: "assistant", content: aiMessage });
+            conversationHistory.push({ role: "assistant", content: cleanResponse });
 
-            return aiMessage;
+            return cleanResponse;
 
         } catch (error) {
             // Network error (server not running)
@@ -415,30 +525,30 @@ async function sendToAI(userMessage) {
 // ---------- Send Handler ----------
 async function handleSend() {
     const text = chatInput.value.trim();
-    if (!text) return;
+    if (!text || isGenerating) return; // 🔒 Block if already generating
 
-    // Disable input
+    // Lock UI immediately
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    sendBtn.disabled = true;
+    lockUI();
 
     // Show user message
     appendMessage('user', text);
 
-    // Show typing indicator
+    // Show typing indicator (will be replaced by streaming bubble)
     showTypingIndicator();
 
     try {
-        const aiResponse = await sendToAI(text);
-        removeTypingIndicator();
-        appendMessage('ai', aiResponse);
+        await sendToAI(text);
     } catch (error) {
         removeTypingIndicator();
         removeQueueMessage();
+        // Clean up any partial streaming bubble
+        const streamingMsg = document.getElementById('streamingMessage');
+        if (streamingMsg) streamingMsg.remove();
         showError(error.message);
     } finally {
-        sendBtn.disabled = false;
-        chatInput.focus();
+        unlockUI();
     }
 }
 
@@ -465,6 +575,8 @@ if (chatInput) {
 // Quick action buttons
 if (quickActions) {
     quickActions.addEventListener('click', (e) => {
+        if (isGenerating) return; // 🔒 Block during generation
+
         const btn = e.target.closest('.quick-action-btn');
         if (!btn) return;
 
