@@ -47,7 +47,8 @@ app.post('/api/chat', async (req, res) => {
                 stream: false,
                 options: {
                     temperature: 0.7,
-                    num_predict: 4096
+                    num_predict: 4096,
+                    stop: ["User:", "Assistant:", "System:", "<|endoftext|>"]
                 }
             })
         });
@@ -107,7 +108,7 @@ app.get('/api/health', async (req, res) => {
 });
 
 // ========== Start ==========
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log('');
     console.log('========================================');
     console.log('  StudyPlanner AI Server');
@@ -115,9 +116,13 @@ app.listen(PORT, () => {
     console.log(`  Model: ${MODEL}`);
     console.log(`  Ollama: ${OLLAMA_URL}`);
     console.log('  Max concurrent: 1');
+    console.log('  Timeout: 10 minutes');
     console.log('========================================');
     console.log('');
     console.log('Make sure Ollama is running: ollama serve');
     console.log('Waiting for requests...');
     console.log('');
 });
+
+// Increase timeout to 10 minutes (600,000 ms)
+server.timeout = 600000;
