@@ -10,7 +10,7 @@ const MODEL = 'qwen3:8b';
 app.use(cors({
     origin: '*', // อนุญาตทุกโดเมน (เพื่อให้ Vercel เข้าถึงได้)
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Bypass-Tunnel-Reminder']
+    allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning']
 }));
 app.use(express.json({ limit: '1mb' }));
 

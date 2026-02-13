@@ -2,7 +2,7 @@
 // Uses local Ollama server via backend proxy at localhost:3000
 
 // const AI_SERVER_URL = "http://localhost:3000"; // ใช้เมื่อรันบนเครื่องตัวเอง
-const AI_SERVER_URL = "https://flat-poems-brake.loca.lt"; // ใช้เมื่อขึ้น Vercel (ต้องรัน npx localtunnel --port 3000 ทุกครั้งและนำ URL มาใส่)
+const AI_SERVER_URL = "https://enjoyable-hortatively-skylar.ngrok-free.dev"; // ใช้เมื่อขึ้น Vercel (ต้องรัน ngrok http 3000 ทุกครั้งและนำ URL มาใส่)
 const RETRY_INTERVAL = 3000; // ms between retries when busy
 
 // ---------- Theme ----------
@@ -364,7 +364,7 @@ async function sendToAI(userMessage) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Bypass-Tunnel-Reminder": "true"
+                    "ngrok-skip-browser-warning": "true"
                 },
                 body: JSON.stringify({ messages: conversationHistory })
             });
@@ -401,6 +401,7 @@ async function sendToAI(userMessage) {
             return aiMessage;
 
         } catch (error) {
+            // Network error (server not running)
             if (error.message === 'Failed to fetch') {
                 throw new Error('Cannot connect to AI server. The Host is offline.');
             }
