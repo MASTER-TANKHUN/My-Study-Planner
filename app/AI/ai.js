@@ -401,7 +401,6 @@ async function sendToAI(userMessage) {
             return aiMessage;
 
         } catch (error) {
-            // Network error (server not running)
             if (error.message === 'Failed to fetch') {
                 throw new Error('Cannot connect to AI server. The Host is offline.');
             }
