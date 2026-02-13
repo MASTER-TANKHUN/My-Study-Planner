@@ -2,7 +2,7 @@
 // Uses local Ollama server via backend proxy at localhost:3000
 
 // const AI_SERVER_URL = "http://localhost:3000"; // ใช้เมื่อรันบนเครื่องตัวเอง
-const AI_SERVER_URL = "https://many-foxes-melt.loca.lt"; // ใช้เมื่อขึ้น Vercel (ต้องรัน npx localtunnel --port 3000 ทุกครั้งและนำ URL มาใส่)
+const AI_SERVER_URL = "https://eleven-webs-learn.loca.lt"; // ใช้เมื่อขึ้น Vercel (ต้องรัน npx localtunnel --port 3000 ทุกครั้งและนำ URL มาใส่)
 const RETRY_INTERVAL = 3000; // ms between retries when busy
 
 // ---------- Theme ----------

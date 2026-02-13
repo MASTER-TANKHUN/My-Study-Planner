@@ -7,7 +7,11 @@ const OLLAMA_URL = 'http://localhost:11434';
 const MODEL = 'qwen3:8b';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*', // อนุญาตทุกโดเมน (เพื่อให้ Vercel เข้าถึงได้)
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Bypass-Tunnel-Reminder']
+}));
 app.use(express.json({ limit: '1mb' }));
 
 // ========== Queue System (Max 1 concurrent) ==========
