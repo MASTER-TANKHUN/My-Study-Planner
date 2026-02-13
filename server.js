@@ -74,31 +74,42 @@ app.post('/api/chat', async (req, res) => {
 
         while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
+            if (done) {
+                // Process any remaining data in the buffer
+                if (buffer.trim()) {
+                    await processLine(buffer.trim());
+                }
+                break;
+            }
 
             buffer += decoder.decode(value, { stream: true });
 
             // Ollama sends one JSON object per line
             const lines = buffer.split('\n');
-            buffer = lines.pop(); // Keep incomplete line in buffer
+            buffer = lines.pop() || ''; // Keep incomplete line in buffer
 
             for (const line of lines) {
-                if (!line.trim()) continue;
-                try {
-                    const chunk = JSON.parse(line);
-                    const content = chunk.message?.content || '';
-                    if (content) {
-                        res.write(content);
-                        totalChars += content.length;
-                    }
-                    // If Ollama says done, end the stream
-                    if (chunk.done) {
-                        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-                        console.log(`[${new Date().toLocaleTimeString()}] ✅ Done. ${totalChars} chars in ${elapsed}s`);
-                    }
-                } catch (e) {
-                    // Skip malformed JSON lines
+                await processLine(line);
+            }
+        }
+
+        async function processLine(line) {
+            if (!line.trim()) return;
+            try {
+                const chunk = JSON.parse(line);
+                const content = chunk.message?.content || '';
+                if (content) {
+                    res.write(content);
+                    totalChars += content.length;
+                    // Optional: console.log(`[Chunk] ${content}`); 
                 }
+
+                if (chunk.done) {
+                    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                    console.log(`[${new Date().toLocaleTimeString()}] ✅ Done. ${totalChars} chars in ${elapsed}s`);
+                }
+            } catch (e) {
+                console.error('Failed to parse chunk:', line);
             }
         }
 
