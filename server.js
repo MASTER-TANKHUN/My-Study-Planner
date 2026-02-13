@@ -47,8 +47,7 @@ app.post('/api/chat', async (req, res) => {
                 stream: false,
                 options: {
                     temperature: 0.7,
-                    num_predict: 4096,
-                    stop: ["User:", "Assistant:", "System:", "<|endoftext|>"]
+                    num_predict: 4096
                 }
             })
         });
