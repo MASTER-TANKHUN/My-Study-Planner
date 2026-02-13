@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyPlanner - Calendar</title>
+    <link rel="website icon"
+        href="https://png.pngtree.com/png-clipart/20231219/original/pngtree-brainstorming-icon-engineering-photo-png-image_13881468.png">
+    <link rel="stylesheet" href="/app/style.css">
+    <link rel="stylesheet" href="/app/loading.css">
+    <link rel="stylesheet" href="calendar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore-compat.js"></script>
+    <script>
+        const FirebaseConfig = {
+            apiKey: "AIzaSyFakeKey-n0th1ng-real-lolxqwerty",
+            authDomain: "secret-fake-auth-domain.firebaseapp.com",
+            projectId: "thisisnotarealprojectid",
+            storageBucket: "fake-bucket-12345.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:deadbeefcafebabe1337",
+            measurementId: "G-FAKEFAKE123"
+        };
+
+    </script>
+
+    <script>
+        const Skibidi = 1;
+        let Sigma = Skibidi;
+
+        function Rizz() {
+            try {
+                if (Skibidi - Sigma === 0) {
+                    console.log("High security system is working ....");
+                } else {
+                    console.log("Wtf Bro?");
+                }
+            } catch (error) {
+                console.error("🛑 Error in Rizz():", error);
+            }
+        }
+
+        function Huzz() {
+            try {
+                console.log("Encrypting system in progress... 🔐");
+
+                setTimeout(() => {
+                    console.log("Encryption success ✅");
+                    console.log("High security system is working ....");
+                    setInterval(Rizz, 10000);
+                }, 2000);
+
+            } catch (error) {
+                console.error("🛑 Error in Huzz():", error);
+            }
+        }
+
+        Huzz();
+
+    </script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCdiNqIwuVkcQRvaTTzOCX2DuwDVwfV8vs",
+            authDomain: "cru-mystudyplanner.firebaseapp.com",
+            projectId: "cru-mystudyplanner",
+            storageBucket: "cru-mystudyplanner.firebasestorage.app",
+            messagingSenderId: "416004303846",
+            appId: "1:416004303846:web:c9e8860c2d864cf3fa4427",
+            measurementId: "G-TH4RVRQNK9"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+
+    <script>
+        const appKey = "AIzaSyDoNotUseThisKeyAbc1234567890";
+        const configBackup = {
+            apiKey: "AIzaSyRandomFakeKeyXdaswjAXIKhdsidj",
+            domain: "fake-auth-domain.firebaseapp.com",
+            project: "my-secret-project-ddszi1z33",
+            specialToken: "super-secret-token-very-long-123456",
+            isEnable: false,
+            endpoints: [
+                "https://api.fakeurl.com/v1/test",
+                "https://useless.endpoint.com/"
+            ],
+            useless: "UselessStringToWasteTimeForHacker"
+        };
+
+        function neverCallMePls(param) {
+            if (param === "hacker") {
+                return "Access Denied!";
+            }
+            let result = [];
+            for (let i = 0; i < param.length; i++) {
+                result.push(param.charCodeAt(i) * 13);
+            }
+            return result.join("-");
+        }
+
+        let apiKye = "AIzaSyNotARealKeyAtAll";
+        let fb_app = null;
+        let something = "this_is_not_api_key_believe_me";
+
+        function totallyRandomFunction(a, b) {
+            return a * b + Math.random();
+        }
+
+        function confuseHacker(data) {
+            if (typeof data === 'string') {
+                return data.split('').reverse().join('');
+            }
+            return "You will never find the real key!";
+        }
+
+        neverCallMePls("hacker");
+        totallyRandomFunction(3, 7);
+        confuseHacker("firebaseConfig");
+    </script>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div id="loadingScreen" class="loading-overlay">
+        <div class="floating-particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <div class="loading-container">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div class="loading-text">Loading your calendar</div>
+            <div class="loading-subtext">Preparing your schedule...</div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-logo" id="navLogo">StudyPlanner</div>
+        <div class="theme-toggle" id="themeToggle" title="Switch Mode">
+            <div class="toggle-track">
+                <div class="toggle-thumb">
+                    <span class="icon-sun"></span>
+                    <span class="icon-moon"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Side Navigation -->
+    <div class="side-nav" id="sideNav">
+        <div class="side-nav-header">Menu</div>
+        <div class="side-nav-content">
+            <span>Develop By MASTER-T</span>
+            <ul class="side-nav-menu">
+                <li id="HomeLink"><i class="fas fa-house" style="margin-right: 8px;"></i>Home</li>
+                <li id="CalendarLink"><i class="fas fa-calendar" style="margin-right: 8px;"></i>Calendar</li>
+                <li id="aiAssistantLink"><i class="fas fa-robot" style="margin-right: 8px;"></i>AI Assistant</li>
+            </ul>
+        </div>
+        <div class="side-nav-footer">
+            <div id="sideNavUserName">
+                <span id="userNameNav"></span>
+                <img id="userProfilePicNav" class="nav-profile-pic" src="" alt="Profile Picture"
+                    style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; margin-left: 8px;">
+            </div>
+            <button id="sideNavLogout" class="side-nav-logout-btn">Logout</button>
+        </div>
+    </div>
+    <div class="side-nav-backdrop" id="sideNavBackdrop"></div>
+
+    <!-- Login Required Popup -->
+    <div id="loginPopup" class="popup-modal">
+        <div class="popup-modal-content">
+            <div style="font-size:2.1rem; margin-bottom:10px; color:#4f46e5;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2 style="margin-bottom:6px">You are not logged in.</h2>
+            <div style="margin-bottom:16px; color:#666;">
+                Please login first to access your calendar.
+            </div>
+            <button id="loginPopupBtn" class="btn">OK</button>
+        </div>
+    </div>
+
+    <main>
+        <div class="calendar-container"> <!-- ปฏิทิน -->
+            <div class="calendar-header">
+                <div class="calendar-nav"> <!-- ปุ่มเลื่อนเดือน -->
+                    <button id="prevMonth"><i class="fas fa-chevron-left"></i></button> <!-- ปุ่มเดือนก่อนหน้า -->
+                    <h2 class="calendar-title" id="calendarTitle"></h2> <!-- ชื่อเดือนและปี -->
+                    <button id="nextMonth"><i class="fas fa-chevron-right"></i></button> <!-- ปุ่มเดือนถัดไป -->
+                </div>
+                <button id="todayBtn" class="btn">Today</button> <!-- ปุ่มกลับมาวันนี้ -->
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
+        </div>
+    </main>
+
+    <!-- Day Detail Modal -->
+    <div id="dayDetailModal" class="day-detail-modal">
+        <div class="day-detail-content">
+            <div class="day-detail-header">
+                <h2 class="day-detail-title" id="dayDetailTitle"></h2>
+                <button class="close-modal" id="closeDayDetail">&times;</button>
+            </div>
+            <div class="day-tasks-list" id="dayTasksList">
+                <!-- Tasks for selected day will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Edit Modal (similar to index.html) -->
+    <div id="taskDetailPopup" class="task-detail-popup">
+        <div class="task-detail-content">
+            <div class="task-detail-header">
+                <h2 class="task-detail-title">Edit Task</h2>
+                <button class="close-popup-btn" id="closeTaskDetail">&times;</button>
+            </div>
+
+            <form class="task-detail-form" id="taskDetailForm">
+                <div class="input-group">
+                    <label for="editTaskTitle">Task Title *</label>
+                    <input type="text" id="editTaskTitle" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskSubject">Subject *</label>
+                    <input type="text" id="editTaskSubject" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskDue">Due Date *</label>
+                    <input type="date" id="editTaskDue" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskPriority">Priority *</label>
+                    <select id="editTaskPriority" class="input-field" required>
+                        <option value="low">Not urgent</option>
+                        <option value="medium">Pretty important</option>
+                        <option value="high">Super urgent!</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskDescription">Additional Details</label>
+                    <textarea id="editTaskDescription" class="input-field"
+                        placeholder="Add any additional notes, requirements, or details about this task..."
+                        rows="4"></textarea>
+                </div>
+
+                <div class="task-detail-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelTaskEdit">Cancel</button>
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-main">
+            <a href="https://github.com/MASTER-TANKHUN" class="footer-dev underline-ani" target="_blank" rel="noopener">
+                Develop By MASTER T
+            </a>
+        </div>
+        <div class="footer-socials">
+            <a class="social-circle fa-brands fa-github " href="https://github.com/MASTER-TANKHUN" target="_blank"
+                rel="noopener" title="GitHub"></a>
+            <a class="social-circle fa-brands fa-instagram" href="https://www.instagram.com/tankhun1452/"
+                target="_blank" rel="noopener" title="Instagram"></a>
+        </div>
+        <div class="footer-ref">
+            <a href="https://www.cru.ac.th/" class="footer-cru underline-ani" target="_blank" rel="noopener">
+                CRU Independent Study M4/12
+            </a>
+        </div>
+    </footer>
+
+    <script src="calendar.js"></script> <!-- สคริปต์ปฏิทิน -->
+    <script src="https://kit.fontawesome.com/a807b74b0a.js"></script> <!-- Font Awesome -->
+</body>
+
+</html>
