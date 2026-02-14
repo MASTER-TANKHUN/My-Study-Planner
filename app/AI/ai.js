@@ -3,7 +3,7 @@
 // Features: Streaming responses, Anti-spam, Smart UI
 
 // const AI_SERVER_URL = "http://localhost:3000"; // ใช้เมื่อรันบนเครื่องตัวเอง
-const AI_SERVER_URL = "https://enjoyable-hortatively-skylar.ngrok-free.dev"; // ใช้เมื่อขึ้น Vercel (ต้องรัน ngrok http 3000 ทุกครั้งและนำ URL มาใส่)
+const AI_SERVER_URL = "https://enjoyable-hortatively-skylar.ngrok-free.dev"; 
 const RETRY_INTERVAL = 3000; // ms between retries when busy
 
 // ---------- Theme ----------

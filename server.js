@@ -53,7 +53,7 @@ app.post('/api/chat', async (req, res) => {
                 messages: messages,
                 stream: true,
                 options: {
-                    temperature: 0.7,
+                    temperature: 0.85,
                     num_predict: 8642,
                     num_ctx: 16384
                 }
