@@ -4,14 +4,39 @@
     padding: 0 1rem;
 }
 
+:root {
+    --card-bg: rgba(255, 255, 255, 0.65);
+    --border-color: rgba(255, 255, 255, 0.5);
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --hover-bg: rgba(255, 255, 255, 0.85);
+}
+
+body.night {
+    --card-bg: rgba(26, 26, 46, 0.5);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --primary-color: #8b5cf6;
+    --primary-hover: #6366f1;
+    --text-primary: #f4f4fc;
+    --text-secondary: #a0aec0;
+    --hover-bg: rgba(40, 40, 72, 0.7);
+}
+
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: 16px;
     box-shadow: var(--shadow);
 }
 
@@ -48,9 +73,12 @@
     grid-template-columns: repeat(7, 1fr);
     gap: 1px;
     background: var(--border-color);
-    border-radius: 12px;
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     overflow: hidden;
     box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
 }
 
 .calendar-day-header {
@@ -70,6 +98,7 @@
     transition: all 0.3s ease;
     position: relative;
     border: 2px solid transparent;
+    color: var(--text-primary);
 }
 
 .calendar-day:hover {
@@ -152,11 +181,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
     color: #222;
     padding: 2rem;
     border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(80, 68, 200, 0.18), 0 1.5px 8px rgba(0, 0, 0, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
     max-width: 600px;
     width: 90%;
     max-height: 80vh;
@@ -164,7 +195,9 @@
 }
 
 body.night .day-detail-content {
-    background: #212136;
+    background: rgba(30, 30, 50, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: #f4f4fc;
 }
 
@@ -206,12 +239,21 @@ body.night .day-detail-content {
 }
 
 .day-task-item {
-    color: #212136;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--text-primary);
     padding: 1rem;
     border-radius: 12px;
     border-left: 4px solid var(--primary-color);
     transition: all 0.3s ease;
     cursor: pointer;
+}
+
+body.night .day-task-item {
+    background: rgba(35, 35, 58, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid var(--primary-color);
 }
 
 .day-task-item:hover {
@@ -299,11 +341,9 @@ body.night .day-detail-content {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(
-        45deg,
-        #ff0000, #00ff00, #0000ff, #ff0000,
-        #ff0000, #00ff00, #0000ff, #ff0000
-    );
+    background: linear-gradient(45deg,
+            #ff0000, #00ff00, #0000ff, #ff0000,
+            #ff0000, #00ff00, #0000ff, #ff0000);
     background-size: 400% 400%;
     border-radius: 8px;
     z-index: -1;
@@ -329,16 +369,20 @@ body.night .day-detail-content {
         background-position: 0% 50%;
         transform: rotate(0deg);
     }
+
     25% {
         background-position: 100% 50%;
     }
+
     50% {
         background-position: 100% 100%;
         transform: rotate(180deg);
     }
+
     75% {
         background-position: 0% 100%;
     }
+
     100% {
         background-position: 0% 50%;
         transform: rotate(360deg);
@@ -347,7 +391,7 @@ body.night .day-detail-content {
 
 /* เอฟเฟกต์เรืองแสงขอบวัน today แบบ RGB */
 .calendar-day.today {
-    box-shadow: 
+    box-shadow:
         0 0 6px 2px rgba(255, 0, 0, 0.45),
         0 0 10px 2.5px rgba(0, 255, 0, 0.38),
         0 0 13px 3px rgba(0, 0, 255, 0.32);
@@ -357,16 +401,17 @@ body.night .day-detail-content {
 /* Animation สำหรับเรืองแสง RGB */
 @keyframes glowPulseRGB {
     from {
-        box-shadow: 
-            0 0 6px 2px rgba(255,0,0,0.45),
-            0 0 10px 2.5px rgba(0,255,0,0.38),
-            0 0 13px 3px rgba(0,0,255,0.32);
+        box-shadow:
+            0 0 6px 2px rgba(255, 0, 0, 0.45),
+            0 0 10px 2.5px rgba(0, 255, 0, 0.38),
+            0 0 13px 3px rgba(0, 0, 255, 0.32);
     }
+
     to {
-        box-shadow: 
-            0 0 10px 2.2px rgba(255,0,0,0.62),
-            0 0 16px 3px rgba(0,255,0,0.48),
-            0 0 20px 4px rgba(0,0,255,0.38);
+        box-shadow:
+            0 0 10px 2.2px rgba(255, 0, 0, 0.62),
+            0 0 16px 3px rgba(0, 255, 0, 0.48),
+            0 0 20px 4px rgba(0, 0, 255, 0.38);
     }
 }
 
