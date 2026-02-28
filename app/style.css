@@ -250,11 +250,93 @@ body.night .nav-link::after {
     max-width: 1100px;
     margin: auto;
     padding: 32px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Background SVG Animations */
+.bg-svg-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.svg-float-1 {
+    animation: float-svg 14s ease-in-out infinite alternate;
+}
+
+.svg-float-2 {
+    animation: float-svg 18s ease-in-out infinite alternate-reverse;
+}
+
+.svg-float-3 {
+    animation: float-svg 20s ease-in-out infinite alternate, spin-svg 30s linear infinite;
+    transform-origin: 50% 20%;
+}
+
+.svg-float-4 {
+    animation: dash-wave 12s linear infinite;
+    stroke-dasharray: 20 20;
+}
+
+.svg-dash-spin {
+    animation: spin-svg 40s linear infinite;
+    transform-origin: 50% 50%;
+}
+
+@keyframes float-svg {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(12px, 18px);
+    }
+}
+
+@keyframes spin-svg {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash-wave {
+    0% {
+        stroke-dashoffset: 0;
+    }
+
+    100% {
+        stroke-dashoffset: -200;
+    }
+}
+
+/* Container Entrance Animations (Cascading FadeInUp) */
+@keyframes fadeInUpSmooth {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .header {
     text-align: center;
     margin-bottom: 48px;
+    animation: fadeInUpSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 0.1s;
 }
 
 .logo {
@@ -288,6 +370,15 @@ body.night .nav-link::after {
     border: 1px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 10px 40px rgba(99, 102, 241, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUpSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.card:nth-child(1) {
+    animation-delay: 0.25s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.4s;
 }
 
 .card:hover {
@@ -472,6 +563,23 @@ body.night .nav-link::after {
     text-align: center;
     box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUpSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.stat-card:nth-child(1) {
+    animation-delay: 0.5s;
+}
+
+.stat-card:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+.stat-card:nth-child(3) {
+    animation-delay: 0.7s;
+}
+
+.stat-card:nth-child(4) {
+    animation-delay: 0.8s;
 }
 
 .stat-card:hover {
@@ -639,6 +747,22 @@ body.night .main-content {
 
 body.night .header {
     color: #fff;
+}
+
+body.night .bg-svg-pattern circle[fill] {
+    fill: rgba(165, 180, 252, 0.04);
+}
+
+body.night .bg-svg-pattern polygon[fill] {
+    fill: rgba(165, 180, 252, 0.03);
+}
+
+body.night .bg-svg-pattern path[stroke] {
+    stroke: rgba(165, 180, 252, 0.05);
+}
+
+body.night .bg-svg-pattern circle[stroke] {
+    stroke: rgba(165, 180, 252, 0.02);
 }
 
 body,
