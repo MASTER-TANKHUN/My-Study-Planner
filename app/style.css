@@ -332,6 +332,17 @@ body.night .nav-link::after {
     }
 }
 
+/* Opacity-only entrance (doesn't conflict with transform transitions) */
+@keyframes fadeInOnly {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 .header {
     text-align: center;
     margin-bottom: 48px;
@@ -369,7 +380,7 @@ body.night .nav-link::after {
     padding: 32px 36px;
     border: 1px solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 10px 40px rgba(99, 102, 241, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     animation: fadeInUpSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
@@ -382,6 +393,7 @@ body.night .nav-link::after {
 }
 
 .card:hover {
+    transition: all 0.3s ease;
     transform: translateY(-3px);
     box-shadow: 0 15px 50px rgba(99, 102, 241, 0.12);
 }
@@ -562,7 +574,7 @@ body.night .nav-link::after {
     padding: 28px 20px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(99, 102, 241, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     animation: fadeInUpSmooth 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
@@ -583,6 +595,7 @@ body.night .nav-link::after {
 }
 
 .stat-card:hover {
+    transition: all 0.3s ease;
     transform: translateY(-4px);
     box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
     border-color: rgba(99, 102, 241, 0.4);
@@ -689,8 +702,6 @@ body,
 .logo,
 .subtitle,
 .main-content,
-.card,
-.stat-card,
 .stat-number,
 .stat-label,
 .card-title,
@@ -725,6 +736,7 @@ body.night .card {
     border-color: rgba(99, 102, 241, 0.2);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     color: #fff;
+    transition: all 0.3s ease;
 }
 
 body.night .stat-card:hover,
@@ -768,8 +780,6 @@ body.night .bg-svg-pattern circle[stroke] {
 body,
 .container,
 .main-content,
-.card,
-.stat-card,
 .header,
 .navbar {
     transition: background 0.38s cubic-bezier(.6, 0, .4, 1), color 0.33s cubic-bezier(.7, 0, .3, 1);
