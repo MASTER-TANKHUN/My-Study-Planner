@@ -248,53 +248,6 @@
                         <button type="submit" class="btn">Add to my list</button>
                     </form>
                 </div>
-                <!-- Task Detail Popup HTML -->
-                <div id="taskDetailPopup" class="task-detail-popup">
-                    <div class="task-detail-content">
-                        <div class="task-detail-header">
-                            <h2 class="task-detail-title">Task Details</h2>
-                            <button class="close-popup-btn" id="closeTaskDetail">&times;</button>
-                        </div>
-
-                        <form class="task-detail-form" id="taskDetailForm">
-                            <div class="input-group">
-                                <label for="editTaskTitle">Task Title *</label>
-                                <input type="text" id="editTaskTitle" class="input-field" required>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="editTaskSubject">Subject *</label>
-                                <input type="text" id="editTaskSubject" class="input-field" required>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="editTaskDue">Due Date *</label>
-                                <input type="date" id="editTaskDue" class="input-field" required>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="editTaskPriority">Priority *</label>
-                                <select id="editTaskPriority" class="input-field" required>
-                                    <option value="low">Not urgent</option>
-                                    <option value="medium">Pretty important</option>
-                                    <option value="high">Super urgent!</option>
-                                </select>
-                            </div>
-
-                            <div class="input-group">
-                                <label for="editTaskDescription">Additional Details</label>
-                                <textarea id="editTaskDescription" class="input-field"
-                                    placeholder="Add any additional notes, requirements, or details about this task..."
-                                    rows="4"></textarea>
-                            </div>
-
-                            <div class="task-detail-actions">
-                                <button type="button" class="btn btn-secondary" id="cancelTaskEdit">Cancel</button>
-                                <button type="submit" class="btn">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
                 <div class="card">
                     <h2 class="card-title">My Tasks</h2>
                     <div id="taskList" class="task-list">
@@ -326,6 +279,54 @@
             </div>
         </div>
     </main>
+
+    <!-- Task Detail Popup HTML (Moved outside main flex containers for proper fixed positioning) -->
+    <div id="taskDetailPopup" class="task-detail-popup">
+        <div class="task-detail-content">
+            <div class="task-detail-header">
+                <h2 class="task-detail-title">Task Details</h2>
+                <button class="close-popup-btn" id="closeTaskDetail">&times;</button>
+            </div>
+
+            <form class="task-detail-form" id="taskDetailForm">
+                <div class="input-group">
+                    <label for="editTaskTitle">Task Title *</label>
+                    <input type="text" id="editTaskTitle" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskSubject">Subject *</label>
+                    <input type="text" id="editTaskSubject" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskDue">Due Date *</label>
+                    <input type="date" id="editTaskDue" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskPriority">Priority *</label>
+                    <select id="editTaskPriority" class="input-field" required>
+                        <option value="low">Not urgent</option>
+                        <option value="medium">Pretty important</option>
+                        <option value="high">Super urgent!</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="editTaskDescription">Additional Details</label>
+                    <textarea id="editTaskDescription" class="input-field"
+                        placeholder="Add any additional notes, requirements, or details about this task..."
+                        rows="4"></textarea>
+                </div>
+
+                <div class="task-detail-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelTaskEdit">Cancel</button>
+                    <button type="submit" class="btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <footer class="site-footer">
         <div class="footer-main">
             <a href="https://github.com/MASTER-TANKHUN" class="footer-dev underline-ani" target="_blank" rel="noopener">

@@ -457,11 +457,129 @@ window.onload = function () {
     const registerEmail = document.getElementById('register-email');
     const registerPassword = document.getElementById('register-password');
     const registerConfirmPassword = document.getElementById('register-confirm-password');
+
     if (loginEmail) loginEmail.addEventListener('input', () => clearError('login-email'));
     if (loginPassword) loginPassword.addEventListener('input', () => clearError('login-password'));
     if (registerName) registerName.addEventListener('input', () => clearError('register-name'));
     if (registerEmail) registerEmail.addEventListener('input', () => clearError('register-email'));
     if (registerPassword) registerPassword.addEventListener('input', () => clearError('register-password'));
     if (registerConfirmPassword) registerConfirmPassword.addEventListener('input', validatePasswordMatch);
+
     switchTab('login');
+    initRobotTracker();
 };
+
+/* Robot Tracker Logic */
+function initRobotTracker() {
+    const leftPupil = document.getElementById('left-pupil');
+    const rightPupil = document.getElementById('right-pupil');
+    const hands = document.getElementById('robot-hands');
+    const handsPeek = document.getElementById('robot-hands-peek');
+    const robotSvg = document.querySelector('.robot-face');
+
+    if (!leftPupil || !rightPupil) return;
+
+    // Track mouse
+    document.addEventListener('mousemove', (e) => {
+        if (hands.getAttribute('transform') === 'translate(0, -5)') return; // Blinded
+
+        // If focusing on text/email inputs, don't track mouse to let it track typing
+        const activeNode = document.activeElement;
+        if (activeNode && (activeNode.type === 'text' || activeNode.type === 'email' || activeNode.tagName === 'TEXTAREA')) return;
+
+        const rect = robotSvg.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const deltaX = e.clientX - centerX;
+        const deltaY = e.clientY - centerY;
+
+        const maxMove = 3;
+
+        // calculate normalized movement
+        let moveX = (deltaX / window.innerWidth) * maxMove * 2;
+        let moveY = (deltaY / window.innerHeight) * maxMove * 2;
+
+        // clamp values
+        moveX = Math.max(-maxMove, Math.min(maxMove, moveX));
+        moveY = Math.max(-maxMove, Math.min(maxMove, moveY));
+
+        leftPupil.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+        rightPupil.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+    });
+
+    // Track Typing lengths (Text/Email)
+    const textInputs = document.querySelectorAll('input[type="text"], input[type="email"]');
+    textInputs.forEach(input => {
+        const updateEyes = (e) => {
+            const length = e.target.value.length;
+            const maxMove = 4;
+            // Map length 0-25 chars to -maxMove to +maxMove linearly
+            let moveX = (length / 25) * (maxMove * 2) - maxMove;
+            moveX = Math.max(-maxMove, Math.min(maxMove, moveX));
+
+            // Look slightly down towards keyboard while typing
+            leftPupil.setAttribute('transform', `translate(${moveX}, 2)`);
+            rightPupil.setAttribute('transform', `translate(${moveX}, 2)`);
+        };
+        input.addEventListener('input', updateEyes);
+        input.addEventListener('focus', updateEyes);
+    });
+
+    // Prevent input blur when clicking the show password toggle
+    const toggles = document.querySelectorAll('.password-toggle');
+    toggles.forEach(toggle => {
+        toggle.addEventListener('mousedown', (e) => e.preventDefault());
+    });
+
+    // Track Password Input
+    const pwInputs = document.querySelectorAll('input[type="password"]');
+    pwInputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            // Cover eyes
+            hands.setAttribute('transform', 'translate(0, -5)');
+            handsPeek.setAttribute('opacity', '0');
+            leftPupil.setAttribute('transform', `translate(0, 0)`);
+            rightPupil.setAttribute('transform', `translate(0, 0)`);
+        });
+
+        input.addEventListener('blur', () => {
+            // Drop hands
+            hands.setAttribute('transform', 'translate(0, 100)');
+            handsPeek.setAttribute('opacity', '0');
+            handsPeek.setAttribute('transform', 'translate(0, 100)');
+        });
+    });
+
+    // Handle Peek (Show Password toggle override)
+    window.togglePassword = function (inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.parentElement.querySelector('.password-toggle i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+
+            // Peek animation
+            if (document.activeElement === input) {
+                hands.setAttribute('transform', 'translate(0, 100)');
+                handsPeek.setAttribute('opacity', '1');
+                handsPeek.setAttribute('transform', 'translate(0, -15)');
+                leftPupil.setAttribute('transform', `translate(0, -2)`); // Look up
+                rightPupil.setAttribute('transform', `translate(0, -2)`);
+            }
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+
+            // Cover eyes again
+            if (document.activeElement === input) {
+                hands.setAttribute('transform', 'translate(0, -5)');
+                handsPeek.setAttribute('opacity', '0');
+                handsPeek.setAttribute('transform', 'translate(0, 100)');
+            }
+        }
+    }
+}

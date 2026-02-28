@@ -169,10 +169,29 @@ body::after {
 }
 
 .logo-icon {
-    font-size: 32px;
-    background: linear-gradient(135deg, #a5b4fc, #818cf8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+.robot-face {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.pupil {
+    transition: transform 0.1s ease-out;
+}
+
+.hands,
+.hands-peek {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s;
+}
+
+/* Base eye behavior limits logic defined in JS, base transform here */
+.robot-watching .robot-face {
+    transform: scale(1.05);
 }
 
 /* Tabs */
@@ -245,6 +264,7 @@ h1,
     text-align: center;
     font-size: 24px;
     background: linear-gradient(to right, #ffffff, #c7d2fe);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 6px;

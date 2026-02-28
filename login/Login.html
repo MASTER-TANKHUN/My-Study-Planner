@@ -140,7 +140,42 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <div class="logo-icon"><i class="fas fa-user-shield"></i></div>
+                <div class="logo-icon">
+                    <svg class="robot-face" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="20" width="60" height="60" rx="15" fill="url(#bot-grad)" />
+                        <circle cx="35" cy="45" r="10" fill="#1e1b4b" />
+                        <circle cx="65" cy="45" r="10" fill="#1e1b4b" />
+                        <circle class="pupil" id="left-pupil" cx="35" cy="45" r="4" fill="#a5b4fc" />
+                        <circle class="pupil" id="right-pupil" cx="65" cy="45" r="4" fill="#a5b4fc" />
+                        <path d="M 40 70 Q 50 75 60 70" stroke="#1e1b4b" stroke-width="4" stroke-linecap="round"
+                            fill="none" />
+                        <g class="hands" id="robot-hands" transform="translate(0, 100)">
+                            <!-- Hands up to cover eyes -->
+                            <path d="M 25 60 Q 35 40 45 45" stroke="#a5b4fc" stroke-width="8" stroke-linecap="round"
+                                fill="none" />
+                            <path d="M 75 60 Q 65 40 55 45" stroke="#a5b4fc" stroke-width="8" stroke-linecap="round"
+                                fill="none" />
+                        </g>
+                        <g class="hands-peek" id="robot-hands-peek" transform="translate(0, 100)" opacity="0">
+                            <!-- Fingers spread to peek -->
+                            <path d="M 20 60 Q 30 50 35 55" stroke="#a5b4fc" stroke-width="6" stroke-linecap="round"
+                                fill="none" />
+                            <path d="M 25 60 Q 35 45 40 50" stroke="#a5b4fc" stroke-width="6" stroke-linecap="round"
+                                fill="none" />
+                            <path d="M 80 60 Q 70 50 65 55" stroke="#a5b4fc" stroke-width="6" stroke-linecap="round"
+                                fill="none" />
+                            <path d="M 75 60 Q 65 45 60 50" stroke="#a5b4fc" stroke-width="6" stroke-linecap="round"
+                                fill="none" />
+                        </g>
+
+                        <defs>
+                            <linearGradient id="bot-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#c7d2fe" />
+                                <stop offset="100%" stop-color="#818cf8" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
             </div>
         </div>
 
